@@ -428,12 +428,12 @@
                 <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
                 <script>
                     var typed = new Typed("#subtitle", {
-                        strings: ['她和影流都是劫','She and shadows are all the suffering'],
+                        strings: ['欢迎光临。','Welcome to my blog.'],
                         startDelay: 300,
                         typeSpeed: 100,
                         loop: true,
                         backSpeed: 50,
-                        showCursor: true
+                        showCursor: false
                     });
                 </script>
                 
@@ -465,10 +465,52 @@
             </div>
             <div class="tag-chips">
                 
+                
+                <a href="/tags/Android/" title="Android: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="Android" style="background-color: #F9EBEA;">Android
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" title="多线程: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="多线程" style="background-color: #F5EEF8;">多线程
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
             </div>
         </div>
     </div>
 </div>
+
+    
+    <link rel="stylesheet" type="text/css" href="/libs/jqcloud/jqcloud.css">
+<style type="text/css">
+    #tag-wordcloud {
+        width: 100%;
+        height: 300px;
+    }
+</style>
+
+<div class="container" data-aos="fade-up">
+    <div class="card">
+        <div id="tag-wordcloud" class="card-content"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/libs/jqcloud/jqcloud-1.0.4.min.js"></script>
+<script type="text/javascript">
+    
+
+    $('#tag-wordcloud').jQCloud([{"text":"Android","weight":1,"link":"/tags/Android/"},{"text":"多线程","weight":1,"link":"/tags/多线程/"}], {
+        autoResize: true
+    });
+</script>
 
     
 
@@ -666,6 +708,8 @@ $(function () {
 
     
 
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
     
 
     
