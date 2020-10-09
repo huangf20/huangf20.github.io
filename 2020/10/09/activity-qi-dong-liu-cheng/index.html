@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="关于非UI线程更新UI, Blog of Hanoi">
+    <meta name="keywords" content="Activity启动流程, Blog of Hanoi">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>关于非UI线程更新UI | Blog of Hanoi</title>
+    <title>Activity启动流程 | Blog of Hanoi</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -29,7 +29,7 @@
 
     <script src="/libs/jquery/jquery.min.js"></script>
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.2.0"><link rel="stylesheet" href="/css/prism-duotone-earth.css" type="text/css"></head>
 
 
 <body>
@@ -415,12 +415,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">关于非UI线程更新UI</h1>
+                    <h1 class="description center-align post-title">Activity启动流程</h1>
                 </div>
             </div>
         </div>
@@ -541,10 +541,6 @@
                                 <span class="chip bg-color">Android</span>
                             </a>
                         
-                            <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
-                                <span class="chip bg-color">多线程</span>
-                            </a>
-                        
                     </div>
                     
                 </div>
@@ -573,49 +569,282 @@
                 
 
                 
-
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.7k
+                </div>
                 
 
                 
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    7 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
             </div>
         </div>
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>代码如下，可以正常运行不会报错，注释中的代码加入后，报错。</p>
-<pre><code>protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mTextView&#x3D;findViewById(R.id.tv_hello);
-        mTextView.setOnClickListener(this);
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                &#x2F;*try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*&#x2F;
-                mTextView.setText(&quot;10&quot;);
+                <img src="/2020/10/09/activity-qi-dong-liu-cheng/1.jpeg" class="" title="Activity启动流程图">
+<p>本篇主要讲的是从一个App启动，到Activity执行onCreate()的流程，</p>
+<h2 id="一切从main-方法开始"><a href="#一切从main-方法开始" class="headerlink" title="一切从main()方法开始"></a>一切从main()方法开始</h2><p>Android中，一个应用程序的开始可以说是从ActivityThread.java中的main()方法中开始的，也就是java程序方法的入口：</p>
+<pre><code>public static void main(String[] args) {
+        ...
+
+        Looper.prepareMainLooper();
+        &#x2F;&#x2F;初始化Looper
+        ...
+        ActivityThread thread &#x3D; new ActivityThread();
+        &#x2F;&#x2F;实例化一个ActivityThread
+        ...
+        thread.attach(false, startSeq);
+        &#x2F;&#x2F;这个方法最后就是为了发送出创建Application的消息
+        ...
+        Looper.loop();
+        &#x2F;&#x2F;主线程进入无限循环状态，等待接收消息
+        throw new RuntimeException(&quot;Main thread loop unexpectedly exited&quot;);
+    }</code></pre>
+<p>main()方法中主要做的事情有：<br>1.初始化主线程的 <strong>Looper</strong> 、主 <strong>Handler</strong> 。并使主线程进入等待接收Message消息的无限循环状态。<br>2.调用 <strong>attach()</strong> 方法，主要就是为了发送出初始化Application的消息。  </p>
+<h2 id="创建Application的消息如何发送？"><a href="#创建Application的消息如何发送？" class="headerlink" title="创建Application的消息如何发送？"></a>创建Application的消息如何发送？</h2><p>ActivityThread的 <strong>attach()</strong> 方法最终的目的是发送出一条创建Application的消息—— <strong>H.BIND_APPLICATION</strong> ，到主线程的主 <strong>Handler</strong> 中。<br>attach()方法中关键代码：  </p>
+<pre><code>private void attach(boolean system, long startSeq) {
+            ...
+            final IActivityManager mgr &#x3D; ActivityManager.getService();
+            &#x2F;&#x2F;获得IActivityManager实例
+            try {
+                mgr.attachApplication(mAppThread, startSeq);
+                &#x2F;&#x2F;又是一个方法
+            } catch (RemoteException ex) {
+                throw ex.rethrowFromSystemServer();
             }
-        }.start();
+            ...
     }</code></pre>
 
-<p>报错信息：</p>
-<img src="/2020/10/09/%E5%85%B3%E4%BA%8E%E9%9D%9EUI%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0UI/0001.png" class="" title="报错信息">
+<p>查看<strong>ActivityManager</strong>中的 <strong>getService()</strong> 方法：</p>
+<pre><code>public static IActivityManager getService() {
+        return IActivityManagerSingleton.get();
+    }
 
-<p>一步步看，TextView中，setText()方法会更新UI，重点在于setText()方法中的：</p>
-<img src="/2020/10/09/%E5%85%B3%E4%BA%8E%E9%9D%9EUI%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0UI/0002.png" class="" title="setText()">
+private static final Singleton&lt;IActivityManager&gt; IActivityManagerSingleton &#x3D;
+            new Singleton&lt;IActivityManager&gt;() {
+                @Override
+                protected IActivityManager create() {
+                    final IBinder b &#x3D; ServiceManager.getService(Context.ACTIVITY_SERVICE);
+                    &#x2F;&#x2F;获得IBinder实例
+                    final IActivityManager am &#x3D; IActivityManager.Stub.asInterface(b);
+                    return am;
+                }
+            };</code></pre>  
+<p>可以看到, <strong>getService()</strong> 返回的是一个静态常量，它是一个单例。在其中终于获得了前面一直在用的IBinder实例。<br>获取 <strong>IBinder</strong> 的目的就是为了通过这个 <strong>IBinder</strong> 和 <strong>ActivityManager</strong> 进行通讯，进而ActivityManager会调度发送 <strong>H.BIND_APPLICATION</strong> 即初始化Application的Message消息。  </p>
+<p>再来看看attachApplication(mAppThread)方法</p>
+<pre><code>@Override
+    public final void attachApplication(IApplicationThread thread, long startSeq) {
+        synchronized (this) {
+            int callingPid &#x3D; Binder.getCallingPid();
+            final int callingUid &#x3D; Binder.getCallingUid();
+            final long origId &#x3D; Binder.clearCallingIdentity();
+            attachApplicationLocked(thread, callingPid, callingUid, startSeq);
+            Binder.restoreCallingIdentity(origId);
+        }
+    }</code></pre>  
+<p>attachApplicationLocked（）方法是内部的一个方法，将thread传回<strong>ActivityManager</strong>。  </p>
+<h3 id="ApplicationThread-mAppThread"><a href="#ApplicationThread-mAppThread" class="headerlink" title="ApplicationThread mAppThread"></a>ApplicationThread mAppThread</h3><p>在ActivityThread.java 中可以看到这个变量：</p>
+<pre><code>final ApplicationThread mAppThread &#x3D; new ApplicationThread();</code></pre>  
+<p>ApplicationThread.java:</p>
+<pre><code>private class ApplicationThread extends IApplicationThread.Stub {
+    ...
+    }</code></pre> 
+<p>attach()方法中出现的两个对象。ApplicationThread作为IApplicationThread的一个子类，承担了最后发送Activity生命周期、及其它一些消息的任务。</p>
+<h3 id="ActivityManagerService调度发送初始化消息"><a href="#ActivityManagerService调度发送初始化消息" class="headerlink" title="ActivityManagerService调度发送初始化消息"></a>ActivityManagerService调度发送初始化消息</h3><p>ActivityManagerService中有一这样的方法：</p>
+<pre><code>private final boolean attachApplicationLocked(IApplicationThread thread,int pid, int callingUid, long startSeq) {
+     
+    if (app.instr !&#x3D; null) {
+                thread.bindApplication(processName, appInfo, providers,
+                        app.instr.mClass,
+                        profilerInfo, app.instr.mArguments,
+                        app.instr.mWatcher,
+                        app.instr.mUiAutomationConnection, testMode,
+                        mBinderTransactionTrackingEnabled, enableTrackAllocation,
+                        isRestrictedBackupMode || !normalMode, app.persistent,
+                        new Configuration(getGlobalConfiguration()), app.compat,
+                        getCommonServicesLocked(app.isolated),
+                        mCoreSettingsObserver.getCoreSettingsLocked(),
+                        buildSerial, isAutofillCompatEnabled);
+            } else {
+                thread.bindApplication(processName, appInfo, providers, null, profilerInfo,
+                        null, null, null, testMode,
+                        mBinderTransactionTrackingEnabled, enableTrackAllocation,
+                        isRestrictedBackupMode || !normalMode, app.persistent,
+                        new Configuration(getGlobalConfiguration()), app.compat,
+                        getCommonServicesLocked(app.isolated),
+                        mCoreSettingsObserver.getCoreSettingsLocked(),
+                        buildSerial, isAutofillCompatEnabled);
+            }
+ }</code></pre> 
+<p>ApplicationThread以IApplicationThread的身份到了ActivityManagerService中，经过一系列的操作，最终被调用了自己的bindApplication()方法，发出初始化Applicationd的消息。  </p>
+<pre><code>public final void bindApplication(String processName, ApplicationInfo appInfo,
+                List&lt;ProviderInfo&gt; providers, ComponentName instrumentationName,
+                ProfilerInfo profilerInfo, Bundle instrumentationArgs,
+                IInstrumentationWatcher instrumentationWatcher,
+                IUiAutomationConnection instrumentationUiConnection, int debugMode,
+                boolean enableBinderTracking, boolean trackAllocation,
+                boolean isRestrictedBackupMode, boolean persistent, Configuration config,
+                CompatibilityInfo compatInfo, Map services, Bundle coreSettings,
+                String buildSerial, boolean autofillCompatibilityEnabled) {
 
-<p>checkForRelayout()方法，即检查是否需要更新layout，断点调试可知，不执行Thread.sleep(2000)时，mLayout为null，执行了则mLayout有值，执行checkForRelayout()方法，以至于执行后面一系列View.requestLayout、ViewRootIml.checkThread方法。<br>ViewRootIml.checkThread方法：  </p>
-<img src="/2020/10/09/%E5%85%B3%E4%BA%8E%E9%9D%9EUI%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0UI/0003.png" class="" title="checkThread()">
+            AppBindData data &#x3D; new AppBindData();
+            data.processName &#x3D; processName;
+            data.appInfo &#x3D; appInfo;
+            data.providers &#x3D; providers;
+            data.instrumentationName &#x3D; instrumentationName;
+            data.instrumentationArgs &#x3D; instrumentationArgs;
+            data.instrumentationWatcher &#x3D; instrumentationWatcher;
+            data.instrumentationUiAutomationConnection &#x3D; instrumentationUiConnection;
+            data.debugMode &#x3D; debugMode;
+            data.enableBinderTracking &#x3D; enableBinderTracking;
+            data.trackAllocation &#x3D; trackAllocation;
+            data.restrictedBackupMode &#x3D; isRestrictedBackupMode;
+            data.persistent &#x3D; persistent;
+            data.config &#x3D; config;
+            data.compatInfo &#x3D; compatInfo;
+            data.initProfilerInfo &#x3D; profilerInfo;
+            data.buildSerial &#x3D; buildSerial;
+            data.autofillCompatibilityEnabled &#x3D; autofillCompatibilityEnabled;
+    
+                
+            sendMessage(H.BIND_APPLICATION, data);
+        }</code></pre> 
+<p>最后发了一条<strong>H.BIND_APPLICATION</strong>消息，接着程序开始了。  </p>
+<h2 id="收到初始化消息之后的世界"><a href="#收到初始化消息之后的世界" class="headerlink" title="收到初始化消息之后的世界"></a>收到初始化消息之后的世界</h2><p>收到消息后都发生了些什么。上面我们已经找到初始化Applicaitond的消息是在哪发送的了。现在，需要看一看收到消息后都发生了些什么。现在找到第一个消息：<strong>H.BIND_APPLICATION</strong>。一旦接收到这个消息就开始创建Application了。这个过程是在handleBindApplication()中完成的。</p>
+<pre><code>private void handleBindApplication(AppBindData data) {
+    ...
+    try {
+                final ClassLoader cl &#x3D; instrContext.getClassLoader();
+                mInstrumentation &#x3D; (Instrumentation)
+                    cl.loadClass(data.instrumentationName.getClassName()).newInstance();
+        
+                &#x2F;&#x2F;通过反射创建Instrumentation实例
+            } catch (Exception e) {
+                throw new RuntimeException(
+                    &quot;Unable to instantiate instrumentation &quot;
+                    + data.instrumentationName + &quot;: &quot; + e.toString(), e);
+    ...       
+    Application app &#x3D; data.info.makeApplication(data.restrictedBackupMode, null); 
+    &#x2F;&#x2F;通过LoadedApp命令创建Application实例
+    ...
+    mInstrumentation.callApplicationOnCreate(app);
+    &#x2F;&#x2F;让仪器调用Application的onCreate()方法
+    ...
+	}
+}</code></pre>
 
-<p>  checkThread方法会检查当前线程是否为UI线程，如果不是，便抛出异常。  </p>
-<p>  到这里，便可得出结论，这跟Activity的生命周期有关了，在onCreate()中直接开启子线程更新UI，此时View还没有画出来，用户不可见，即mLayout 为空，也就不会执行后面的方法，检查当前线程是否为UI线程了；  </p>
-<p>  而子线程延时一段时间，此时OnResume和onStart都已经执行完成，View已经出来了，再更新UI就会执行TextView中checkForRelayout()和后面一系列方法，最后ViewRootIml的checkThread()，程序崩溃。Android要求只能在主UI线程更新UI，这是因为Android的单线程模型，View的修改若是支持多线程，那么带来的线程同步和线程安全问题难以解决。再有一点自己的理解，在一般的APP中，UI的更新都是在View绘制完成之后用户交互的时候的，那么在子线程更新UI必定会崩溃。</p>
+<h3 id="Instrumentation类"><a href="#Instrumentation类" class="headerlink" title="Instrumentation类"></a>Instrumentation类</h3><p>看看文档是怎么说的：<br>用于实现应用程序检测代码的基类。运行时打开检测后，将为您实例化该类在任何应用程序代码之前，允许您监视所有系统与应用程序的交互。仪器通过一个AndroidManifest.xml的&amp;lt；instrumentation&amp;gt；标记。  </p>
+<img src="/2020/10/09/activity-qi-dong-liu-cheng/2.png" class="" title="Instrumentation类">  
+<p>打开这个类你可以发现，最终Apllication的创建，Activity的创建，以及生命周期都会经过这个对象去执行。简单点说，就是把这些操作包装了一层。通过操作Instrumentation进而实现上述的功能。<br>同时我们可看到，Instrumentation是通过反射来来实现的，而反射的ClassName就是通过Binder传递过来的。  </p>
+<p>再来看一下<strong>callApplicationOnCreate（）</strong>方法  </p>
+<pre><code>public void callApplicationOnCreate(Application app) {
+        app.onCreate();
+    }</code></pre>
+<p>调用了一下Application的onCreate()方法,这就是为什么它能够起到监控的作用。  </p>
+<p>再来看一下<strong>makeApplication（）</strong>方法</p>
+<pre><code>public Application makeApplication(boolean forceDefaultAppClass,
+            Instrumentation instrumentation) {
+    ...
+    String appClass &#x3D; mApplicationInfo.className;
+    &#x2F;&#x2F;得到className以便反射
+    &#x2F;&#x2F;
+    ContextImpl appContext &#x3D; ContextImpl.createAppContext(mActivityThread, this);
+            app &#x3D; mActivityThread.mInstrumentation.newApplication(
+                    cl, appClass, appContext);
+    &#x2F;&#x2F;通过Instrumentation创建Application
+    ...
+           
+}</code></pre>
+<p>在取得Application的实际类名之后，最终的创建工作还是交由Instrumentation去完成。  </p>
+<h3 id="目光移回Instrumentation中的newAppliction"><a href="#目光移回Instrumentation中的newAppliction" class="headerlink" title="目光移回Instrumentation中的newAppliction()"></a>目光移回Instrumentation中的newAppliction()</h3><pre><code>public Application newApplication(ClassLoader cl, String className, Context context)
+            throws InstantiationException, IllegalAccessException, 
+            ClassNotFoundException {
+        Application app &#x3D; getFactory(context.getPackageName())
+                .instantiateApplication(cl, className);
+        &#x2F;&#x2F;反射创建
+        app.attach(context);
+        &#x2F;&#x2F;Application被创建后第一个调用的方法,绑定Context。
+        return app;
+    }</code></pre>
 
+
+
+<h2 id="LaunchActivity"><a href="#LaunchActivity" class="headerlink" title="LaunchActivity"></a>LaunchActivity</h2><p>当Application初始化完成后，系统会更具Manifests中的配置的启动Activity发送一个Intent去启动相应的Activity，处理是在ActivityThread中的handleLaunchActivity()中进行的。</p>
+<pre><code>public Activity handleLaunchActivity(ActivityClientRecord r,
+            PendingTransactionActions pendingActions, Intent customIntent) {
+
+    final Activity a &#x3D; performLaunchActivity(r, customIntent);
+
+        if (a !&#x3D; null) {
+            r.createdConfig &#x3D; new Configuration(mConfiguration);
+            reportSizeConfigurations(r);
+            if (!r.activity.mFinished &amp;&amp; pendingActions !&#x3D; null) {
+                pendingActions.setOldState(r.state);
+                pendingActions.setRestoreInstanceState(true);
+                pendingActions.setCallOnPostCreate(true);
+            }
+        } else {
+            &#x2F;&#x2F; If there was an error, for any reason, tell the activity manager to stop us.
+            try {
+                ActivityManager.getService()
+                        .finishActivity(r.token, Activity.RESULT_CANCELED, null,
+                                Activity.DONT_FINISH_TASK_WITH_ACTIVITY);
+            } catch (RemoteException ex) {
+                throw ex.rethrowFromSystemServer();
+            }
+        }
+
+        return a;
+}</code></pre>
+
+<p>查看一下 <strong>performLaunchActivity( )</strong> 方法</p>
+<pre><code>private Activity performLaunchActivity(ActivityClientRecord r, Intent customIntent) {
+    ...
+    java.lang.ClassLoader cl &#x3D; appContext.getClassLoader();
+           activity &#x3D; mInstrumentation.newActivity(
+                   cl, component.getClassName(), r.intent);
+    &#x2F;&#x2F;&#x2F;&#x2F;通过仪表来创建Activity
+    ...
+    Application app &#x3D; r.packageInfo.makeApplication(false, mInstrumentation);
+    &#x2F;&#x2F;获取Application
+    ...
+    activity.attach(appContext, this, getInstrumentation(), r.token,
+                       r.ident, app, r.intent, r.activityInfo, title, r.parent,
+                       r.embeddedID, r.lastNonConfigurationInstances, config,
+                       r.referrer, r.voiceInteractor, window, r.configCallback);
+    &#x2F;&#x2F;绑定Context
+    ...
+    if (r.isPersistable()) {
+                   mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);
+               } else {
+                   mInstrumentation.callActivityOnCreate(activity, r.state);
+               }
+&#x2F;&#x2F;是否可持久化,通过Instrumentation来创建Activity
+}</code></pre>
+
+<p> 到这里，从Application创建开始，到第一个Activity onCreate()结束的整个流程就结束了。</p>
+
+<div id="gitalk-container"></div>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+		<script>
+		var gitalkConfig = {"clientID":"531fdf9b5545166cc613","clientSecret":"ab49d6454dc28018f5f2c2651e5a626bc7064c66","repo":"gitalk","owner":"huangf20","admin":["huangf20"],"distractionFreeMode":false};
+	    gitalkConfig.id = md5(location.pathname);
+		var gitalk = new Gitalk(gitalkConfig);
+	    gitalk.render("gitalk-container");
+	    </script>
             </div>
             <hr/>
 
@@ -640,7 +869,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://huangf20.github.io/2020/10/09/%E5%85%B3%E4%BA%8E%E9%9D%9EUI%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0UI/">https://huangf20.github.io/2020/10/09/%E5%85%B3%E4%BA%8E%E9%9D%9EUI%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0UI/</a>
+                    <a href="https://huangf20.github.io/2020/10/09/activity-qi-dong-liu-cheng/">https://huangf20.github.io/2020/10/09/activity-qi-dong-liu-cheng/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -680,10 +909,6 @@
                             
                                 <a href="/tags/Android/">
                                     <span class="chip bg-color">Android</span>
-                                </a>
-                            
-                                <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
-                                    <span class="chip bg-color">多线程</span>
                                 </a>
                             
                         </div>
@@ -856,7 +1081,57 @@
                 <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/2020/10/09/%E5%85%B3%E4%BA%8E%E9%9D%9EUI%E7%BA%BF%E7%A8%8B%E6%9B%B4%E6%96%B0UI/">
+                <a href="/2020/10/09/activity-qi-dong-liu-cheng/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Activity启动流程">
+                        
+                        <span class="card-title">Activity启动流程</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            日常开发中似乎只要知道Activity的生命周期就够用了，但是深入了解的话还是要从源码中探索
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-09
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Android/" class="post-category">
+                                    Android
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Android/">
+                        <span class="chip bg-color">Android</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">
                     <div class="card-image">
                         
                         
@@ -887,7 +1162,6 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
@@ -899,43 +1173,6 @@
                         <span class="chip bg-color">多线程</span>
                     </a>
                     
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/09/28/hello-world/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                        
-                        <span class="card-title">Hello World</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-28
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            hanoi
-                            
-                        </span>
-                    </div>
                 </div>
                 
             </div>
@@ -1138,6 +1375,9 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
             <br>
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">2.2k</span>&nbsp;字
             
             
             

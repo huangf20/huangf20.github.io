@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, Blog of Hanoi">
+    <meta name="keywords" content="关于非UI线程更新UI, Blog of Hanoi">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hello World | Blog of Hanoi</title>
+    <title>关于非UI线程更新UI | Blog of Hanoi</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -415,12 +415,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description center-align post-title">关于非UI线程更新UI</h1>
                 </div>
             </div>
         </div>
@@ -535,12 +535,29 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Android/">
+                                <span class="chip bg-color">Android</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                                <span class="chip bg-color">多线程</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Android/" class="post-category">
+                                Android
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -549,7 +566,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-09-28
+                    2020-10-09
                 </div>
                 
 
@@ -558,7 +575,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    101
+                    437
                 </div>
                 
 
@@ -580,15 +597,39 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span></code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-bash"><code class="language-bash">$ hexo server</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-bash"><code class="language-bash">$ hexo generate</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-bash"><code class="language-bash">$ hexo deploy</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+                <p>代码如下，可以正常运行不会报错，注释中的代码加入后，报错。</p>
+<pre><code>protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mTextView&#x3D;findViewById(R.id.tv_hello);
+        mTextView.setOnClickListener(this);
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                &#x2F;*try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*&#x2F;
+                mTextView.setText(&quot;10&quot;);
+            }
+        }.start();
+    }</code></pre>
+
+<p>报错信息：</p>
+<img src="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0001.png" class="" title="报错信息">
+
+<p>一步步看，TextView中，setText()方法会更新UI，重点在于setText()方法中的：</p>
+<img src="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0002.png" class="" title="setText()">
+
+<p>checkForRelayout()方法，即检查是否需要更新layout，断点调试可知，不执行Thread.sleep(2000)时，mLayout为null，执行了则mLayout有值，执行checkForRelayout()方法，以至于执行后面一系列View.requestLayout、ViewRootIml.checkThread方法。<br>ViewRootIml.checkThread方法：  </p>
+<img src="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0003.png" class="" title="checkThread()">
+
+<p>  checkThread方法会检查当前线程是否为UI线程，如果不是，便抛出异常。  </p>
+<p>  到这里，便可得出结论，这跟Activity的生命周期有关了，在onCreate()中直接开启子线程更新UI，此时View还没有画出来，用户不可见，即mLayout 为空，也就不会执行后面的方法，检查当前线程是否为UI线程了；  </p>
+<p>  而子线程延时一段时间，此时OnResume和onStart都已经执行完成，View已经出来了，再更新UI就会执行TextView中checkForRelayout()和后面一系列方法，最后ViewRootIml的checkThread()，程序崩溃。Android要求只能在主UI线程更新UI，这是因为Android的单线程模型，View的修改若是支持多线程，那么带来的线程同步和线程安全问题难以解决。再有一点自己的理解，在一般的APP中，UI的更新都是在View绘制完成之后用户交互的时候的，那么在子线程更新UI必定会崩溃。</p>
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
@@ -623,7 +664,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://huangf20.github.io/2020/09/28/hello-world/">https://huangf20.github.io/2020/09/28/hello-world/</a>
+                    <a href="https://huangf20.github.io/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">https://huangf20.github.io/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -660,7 +701,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/Android/">
+                                    <span class="chip bg-color">Android</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                                    <span class="chip bg-color">多线程</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -830,19 +879,19 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">
+                <a href="/2020/10/09/activity-qi-dong-liu-cheng/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="关于非UI线程更新UI">
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Activity启动流程">
                         
-                        <span class="card-title">关于非UI线程更新UI</span>
+                        <span class="card-title">Activity启动流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            通常的Android开发中不会在非UI线程中更新UI，突然碰到一种情况在子线程更新UI也不会报错，现在就来稍微探索一下其中缘由。
+                            日常开发中似乎只要知道Activity的生命周期就够用了，但是深入了解的话还是要从源码中探索
                         
                     </div>
                     <div class="publish-info">
@@ -868,10 +917,6 @@
                         <span class="chip bg-color">Android</span>
                     </a>
                     
-                    <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
-                        <span class="chip bg-color">多线程</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -880,7 +925,7 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
                 <a href="/2020/09/28/hello-world/">
@@ -910,7 +955,6 @@
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>
