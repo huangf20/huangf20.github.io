@@ -566,7 +566,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-10-09
+                    2020-08-09
                 </div>
                 
 
@@ -619,13 +619,13 @@
     }</code></pre>
 
 <p>报错信息：</p>
-<img src="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0001.png" class="" title="报错信息">
+<img src="/2020/08/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0001.png" class="" title="报错信息">
 
 <p>一步步看，TextView中，setText()方法会更新UI，重点在于setText()方法中的：</p>
-<img src="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0002.png" class="" title="setText()">
+<img src="/2020/08/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0002.png" class="" title="setText()">
 
 <p>checkForRelayout()方法，即检查是否需要更新layout，断点调试可知，不执行Thread.sleep(2000)时，mLayout为null，执行了则mLayout有值，执行checkForRelayout()方法，以至于执行后面一系列View.requestLayout、ViewRootIml.checkThread方法。<br>ViewRootIml.checkThread方法：  </p>
-<img src="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0003.png" class="" title="checkThread()">
+<img src="/2020/08/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/0003.png" class="" title="checkThread()">
 
 <p>  checkThread方法会检查当前线程是否为UI线程，如果不是，便抛出异常。  </p>
 <p>  到这里，便可得出结论，这跟Activity的生命周期有关了，在onCreate()中直接开启子线程更新UI，此时View还没有画出来，用户不可见，即mLayout 为空，也就不会执行后面的方法，检查当前线程是否为UI线程了；  </p>
@@ -664,7 +664,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://huangf20.github.io/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">https://huangf20.github.io/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/</a>
+                    <a href="https://huangf20.github.io/2020/08/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">https://huangf20.github.io/2020/08/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -879,7 +879,44 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/10/09/activity-qi-dong-liu-cheng/">
+                <a href="/2020/09/28/hello-world/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        
+                        <span class="card-title">Hello World</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-09-28
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            hanoi
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/06/09/activity-qi-dong-liu-cheng/">
                     <div class="card-image">
                         
                         
@@ -895,9 +932,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-10-09
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-09
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -917,43 +954,6 @@
                         <span class="chip bg-color">Android</span>
                     </a>
                     
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/09/28/hello-world/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
-                        
-                        <span class="card-title">Hello World</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-28
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            hanoi
-                            
-                        </span>
-                    </div>
                 </div>
                 
             </div>

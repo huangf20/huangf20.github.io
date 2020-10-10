@@ -562,7 +562,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-10-09
+                    2020-06-09
                 </div>
                 
 
@@ -593,7 +593,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <img src="/2020/10/09/activity-qi-dong-liu-cheng/1.jpeg" class="" title="Activity启动流程图">
+                <img src="/2020/06/09/activity-qi-dong-liu-cheng/1.jpeg" class="" title="Activity启动流程图">
 <p>本篇主要讲的是从一个App启动，到Activity执行onCreate()的流程，</p>
 <h2 id="一切从main-方法开始"><a href="#一切从main-方法开始" class="headerlink" title="一切从main()方法开始"></a>一切从main()方法开始</h2><p>Android中，一个应用程序的开始可以说是从ActivityThread.java中的main()方法中开始的，也就是java程序方法的入口：</p>
 <pre><code>public static void main(String[] args) {
@@ -746,7 +746,7 @@ private static final Singleton&lt;IActivityManager&gt; IActivityManagerSingleton
 }</code></pre>
 
 <h3 id="Instrumentation类"><a href="#Instrumentation类" class="headerlink" title="Instrumentation类"></a>Instrumentation类</h3><p>看看文档是怎么说的：<br>用于实现应用程序检测代码的基类。运行时打开检测后，将为您实例化该类在任何应用程序代码之前，允许您监视所有系统与应用程序的交互。仪器通过一个AndroidManifest.xml的&amp;lt；instrumentation&amp;gt；标记。  </p>
-<img src="/2020/10/09/activity-qi-dong-liu-cheng/2.png" class="" title="Instrumentation类">  
+<img src="/2020/06/09/activity-qi-dong-liu-cheng/2.png" class="" title="Instrumentation类">  
 <p>打开这个类你可以发现，最终Apllication的创建，Activity的创建，以及生命周期都会经过这个对象去执行。简单点说，就是把这些操作包装了一层。通过操作Instrumentation进而实现上述的功能。<br>同时我们可看到，Instrumentation是通过反射来来实现的，而反射的ClassName就是通过Binder传递过来的。  </p>
 <p>再来看一下<strong>callApplicationOnCreate（）</strong>方法  </p>
 <pre><code>public void callApplicationOnCreate(Application app) {
@@ -869,7 +869,7 @@ private static final Singleton&lt;IActivityManager&gt; IActivityManagerSingleton
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://huangf20.github.io/2020/10/09/activity-qi-dong-liu-cheng/">https://huangf20.github.io/2020/10/09/activity-qi-dong-liu-cheng/</a>
+                    <a href="https://huangf20.github.io/2020/06/09/activity-qi-dong-liu-cheng/">https://huangf20.github.io/2020/06/09/activity-qi-dong-liu-cheng/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1076,62 +1076,11 @@ private static final Singleton&lt;IActivityManager&gt; IActivityManagerSingleton
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
-            <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
-            <div class="card">
-                <a href="/2020/10/09/activity-qi-dong-liu-cheng/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Activity启动流程">
-                        
-                        <span class="card-title">Activity启动流程</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            日常开发中似乎只要知道Activity的生命周期就够用了，但是深入了解的话还是要从源码中探索
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-09
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/Android/" class="post-category">
-                                    Android
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/Android/">
-                        <span class="chip bg-color">Android</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
         <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/10/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">
+                <a href="/2020/08/09/guan-yu-fei-ui-xian-cheng-geng-xin-ui/">
                     <div class="card-image">
                         
                         
@@ -1147,9 +1096,9 @@ private static final Singleton&lt;IActivityManager&gt; IActivityManagerSingleton
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-09
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-08-09
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -1171,6 +1120,56 @@ private static final Singleton&lt;IActivityManager&gt; IActivityManagerSingleton
                     
                     <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
                         <span class="chip bg-color">多线程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/06/09/activity-qi-dong-liu-cheng/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="Activity启动流程">
+                        
+                        <span class="card-title">Activity启动流程</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            日常开发中似乎只要知道Activity的生命周期就够用了，但是深入了解的话还是要从源码中探索
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-06-09
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Android/" class="post-category">
+                                    Android
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Android/">
+                        <span class="chip bg-color">Android</span>
                     </a>
                     
                 </div>
