@@ -56,6 +56,33 @@
     
     
     <entry>
+      <title>http状态码及其含义</title>
+      <link href="2020/08/26/http-zhuang-tai-ma-ji-qi-han-yi/"/>
+      <url>2020/08/26/http-zhuang-tai-ma-ji-qi-han-yi/</url>
+      
+        <content type="html"><![CDATA[<h4 id="其中，HTTP-Version表示服务器HTTP协议的版本；Status-Code表示服务器发回的响应状态代码；Reason-Phrase表示状态代码的文本描述。状态代码由三位数字组成，第一个数字定义了响应的类别，且有五种可能取值。"><a href="#其中，HTTP-Version表示服务器HTTP协议的版本；Status-Code表示服务器发回的响应状态代码；Reason-Phrase表示状态代码的文本描述。状态代码由三位数字组成，第一个数字定义了响应的类别，且有五种可能取值。" class="headerlink" title="其中，HTTP-Version表示服务器HTTP协议的版本；Status-Code表示服务器发回的响应状态代码；Reason-Phrase表示状态代码的文本描述。状态代码由三位数字组成，第一个数字定义了响应的类别，且有五种可能取值。"></a>其中，HTTP-Version表示服务器HTTP协议的版本；Status-Code表示服务器发回的响应状态代码；Reason-Phrase表示状态代码的文本描述。状态代码由三位数字组成，第一个数字定义了响应的类别，且有五种可能取值。</h4><ul><li>1xx：指示信息–表示请求已接收，继续处理。</li><li>2xx：成功–表示请求已被成功接收、理解、接受。</li><li>3xx：重定向–要完成请求必须进行更进一步的操作。</li><li>4xx：客户端错误–请求有语法错误或请求无法实现。</li><li>5xx：服务器端错误–服务器未能实现合法的请求。<h4 id="常见状态代码、状态描述的说明如下。"><a href="#常见状态代码、状态描述的说明如下。" class="headerlink" title="常见状态代码、状态描述的说明如下。"></a>常见状态代码、状态描述的说明如下。</h4></li><li>200 OK：客户端请求成功。</li><li>400 Bad Request：客户端请求有语法错误，不能被服务器所理解。</li><li>401 Unauthorized：请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用。</li><li>403 Forbidden：服务器收到请求，但是拒绝提供服务。</li><li>404 Not Found：请求资源不存在，举个例子：输入了错误的URL。</li><li>500 Internal Server Error：服务器发生不可预期的错误。</li><li>503 Server Unavailable：服务器当前不能处理客户端的请求，一段时间后可能恢复正常，举个例子：HTTP/1.1 200 OK（CRLF）。</li></ul><div id="gitalk-container"></div><script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script><script>var gitalkConfig = {"clientID":"531fdf9b5545166cc613","clientSecret":"ab49d6454dc28018f5f2c2651e5a626bc7064c66","repo":"gitalk","owner":"huangf20","admin":["huangf20"],"distractionFreeMode":false};    gitalkConfig.id = md5(location.pathname);var gitalk = new Gitalk(gitalkConfig);    gitalk.render("gitalk-container");    </script>]]></content>
+      
+      
+      <categories>
+          
+          <category> 计算机网络 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> http </tag>
+            
+            <tag> 计算机网络 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Git常用命令</title>
       <link href="2020/08/20/git-chang-yong-ming-ling/"/>
       <url>2020/08/20/git-chang-yong-ming-ling/</url>
@@ -235,6 +262,83 @@
             <tag> RecyclerView </tag>
             
             <tag> 反射 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Java的四种引用，强弱软虚，用到的场景</title>
+      <link href="2020/04/15/java-de-si-chong-yin-yong-qiang-ruo-ruan-xu-yong-dao-de-chang-jing/"/>
+      <url>2020/04/15/java-de-si-chong-yin-yong-qiang-ruo-ruan-xu-yong-dao-de-chang-jing/</url>
+      
+        <content type="html"><![CDATA[<h2 id="强引用（StrongReference）"><a href="#强引用（StrongReference）" class="headerlink" title="强引用（StrongReference）"></a>强引用（StrongReference）</h2><p>强引用是使用最普遍的引用。如果一个对象具有强引用，那垃圾回收器绝不会回收它。<br>如下：</p><pre><code>                                  Object o&#x3D;new Object();   &#x2F;&#x2F;  强引用</code></pre><p>当内存空间不足，Java虚拟机宁愿抛出<strong>OutOfMemoryError</strong>错误，使程序异常终止，也不会靠随意回收具有强引用的对象来解决内存不足的问题。如果不使用时，要通过如下方式来弱化引用，如下：</p><pre><code> o&#x3D;null;     &#x2F;&#x2F; 帮助垃圾收集器回收此对象</code></pre><p> 显式地设置o为null，或超出对象的生命周期范围，则gc认为该对象不存在引用，这时就可以回收这个对象。具体什么时候收集这要取决于gc的算法。<br>举例：</p><pre><code>public void test(){    Object o&#x3D;new Object();    &#x2F;&#x2F; 省略其他操作}</code></pre><p>在一个方法的内部有一个强引用，这个引用保存在栈中，而真正的引用内容（Object）保存在堆中。当这个方法运行完成后就会退出方法栈，则引用内容的引用不存在，这个Object会被回收。<br>但是如果这个o是<strong>全局</strong>的变量时，就需要在不用这个对象时赋值为null，因为强引用不会被垃圾回收。<br>强引用在实际中有非常重要的用处，举个ArrayList的实现源代码：</p><pre><code>private transient Object[] elementData;public void clear() {        modCount++;        &#x2F;&#x2F; Let gc do its work        for (int i &#x3D; 0; i &lt; size; i++)            elementData[i] &#x3D; null;        size &#x3D; 0;}</code></pre><p>在ArrayList类中定义了一个私有的变量elementData数组，在调用方法清空数组时可以看到为每个数组内容赋值为null。不同于elementData=null，强引用仍然存在，避免在后续调用 add()等方法添加元素时进行重新的内存分配。使用如clear()方法中释放内存的方法对数组中存放的引用类型特别适用，这样就可以及时释放内存。</p><h2 id="软引用（SoftReference）"><a href="#软引用（SoftReference）" class="headerlink" title="软引用（SoftReference）"></a>软引用（SoftReference）</h2><p>如果一个对象只具有软引用，则内存空间足够，垃圾回收器就不会回收它；如果内存空间不足了，就会回收这些对象的内存。只要垃圾回收器没有回收它，该对象就可以被程序使用。软引用可用来实现<strong>内存敏感</strong>的高速缓存。   </p><pre><code> String str&#x3D;new String(&quot;abc&quot;);                                     &#x2F;&#x2F; 强引用  SoftReference&lt;String&gt; softRef&#x3D;new SoftReference&lt;String&gt;(str);     &#x2F;&#x2F; 软引用</code></pre><p>  当内存不足时，等价于：</p><pre><code>If(JVM.内存不足()) {   str &#x3D; null;  &#x2F;&#x2F; 转换为软引用   System.gc(); &#x2F;&#x2F; 垃圾回收器进行回收}</code></pre><p>软引用在实际中有重要的应用，例如浏览器的后退按钮。按后退时，这个后退时显示的网页内容是重新进行请求还是从缓存中取出呢？这就要看具体的实现策略了。</p><ul><li>如果一个网页在浏览结束时就进行内容的回收，则按后退查看前面浏览过的页面时，需要重新构建</li><li>如果将浏览过的网页存储到内存中会造成内存的大量浪费，甚至会造成内存溢出<br>这时候就可以使用软引用<pre><code>Browser prev &#x3D; new Browser();               &#x2F;&#x2F; 获取页面进行浏览SoftReference sr &#x3D; new SoftReference(prev); &#x2F;&#x2F; 浏览完毕后置为软引用    if(sr.get()!&#x3D;null){     rev &#x3D; (Browser) sr.get();           &#x2F;&#x2F; 还没有被回收器回收，直接获取}else{    prev &#x3D; new Browser();               &#x2F;&#x2F; 由于内存吃紧，所以对软引用的对象回收了    sr &#x3D; new SoftReference(prev);       &#x2F;&#x2F; 重新构建}</code></pre>这样就很好的解决了实际的问题。<br>软引用可以和一个<strong>引用队列</strong>（ReferenceQueue）联合使用，如果软引用所引用的对象被垃圾回收器回收，Java虚拟机就会把这个软引用加入到与之关联的引用队列中。</li></ul><h2 id="弱引用"><a href="#弱引用" class="headerlink" title="弱引用"></a>弱引用</h2><p>如果一个对象只具有弱引用，那就类似于可有可无的生活用品。弱引用与软引用的区别在于：只具有弱引用的对象拥有<strong>更短暂</strong>的生命周期。在垃圾回收器线程扫描它所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，不管当前内存空间足够与否，都会回收它的内存。不过，由于垃圾回收器是一个<strong>优先级很低</strong>的线程， 因此不一定会很快发现那些只具有弱引用的对象。弱引用可以和一个引用队列（ReferenceQueue）联合使用，如果弱引用所引用的对象被垃圾回收，Java虚拟机就会把这个弱引用加入到与之关联的引用队列中。当你想引用一个对象，但是这个对象有自己的生命周期，你不想介入这个对象的生命周期，这时候你就是用弱引用。这个引用不会在对象的垃圾回收判断中产生任何附加的影响。比如说Thread中保存的ThreadLocal的全局映射，因为我们的Thread不想在ThreadLocal生命周期结束后还对其造成影响，所以应该使用弱引用，这个和缓存没有关系，只是为了防止内存泄漏所做的特殊操作。</p><h2 id="幽灵引用-虚引用"><a href="#幽灵引用-虚引用" class="headerlink" title="幽灵引用(虚引用) "></a>幽灵引用(虚引用) </h2><p>虚引用主要用来跟踪对象被垃圾回收器回收的活动。虚引用与软引用和弱引用的一个区别在于：虚引用必须和<strong>引用队列</strong> （ReferenceQueue）联合使用。当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存后，把这个虚引用加入到与之关联的引用队列中。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否被垃圾回收。如果程序发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存回收后采取必要的行动。由于Object.finalize()方法的不安全性、低效性，常常使用虚引用完成对象回收后的资源释放工作。当你创建一个虚引用时要传入一个引用队列，如果引用队列中出现了你的虚引用，说明它已经被回收，那么你可以在其中做一些相关操作，主要是实现细粒度的内存控制。比如监视缓存，当缓存被回收后才申请新的缓存区。</p><div id="gitalk-container"></div><script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script><script>var gitalkConfig = {"clientID":"531fdf9b5545166cc613","clientSecret":"ab49d6454dc28018f5f2c2651e5a626bc7064c66","repo":"gitalk","owner":"huangf20","admin":["huangf20"],"distractionFreeMode":false};    gitalkConfig.id = md5(location.pathname);var gitalk = new Gitalk(gitalkConfig);    gitalk.render("gitalk-container");    </script>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>为什么TCP连接三次握手而TCP断开连接四次分手？</title>
+      <link href="2020/03/10/wei-shi-me-tcp-lian-jie-san-ci-wo-shou-er-tcp-duan-kai-lian-jie-si-ci-fen-shou/"/>
+      <url>2020/03/10/wei-shi-me-tcp-lian-jie-san-ci-wo-shou-er-tcp-duan-kai-lian-jie-si-ci-fen-shou/</url>
+      
+        <content type="html"><![CDATA[<h2 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h2><img src="/2020/03/10/wei-shi-me-tcp-lian-jie-san-ci-wo-shou-er-tcp-duan-kai-lian-jie-si-ci-fen-shou/1.png" class=""><p>所谓三次握手(Three-way Handshake)，是指建立一个TCP连接时，需要<strong>客户端</strong>和<strong>服务器</strong>总共发送3个包。  </p><p>三次握手的目的是连接服务器指定端口，建立TCP连接,并同步连接双方的序列号和确认号并交换 TCP 窗口大小信息.在socket编程中，客户端执行connect()时。将触发三次握手。</p><ul><li><p>第一次握手:<br>客户端发送一个TCP的SYN标志位置1的包指明客户打算连接的服务器的端口，以及初始序号X,保存在包头的序列号(Sequence Number)字段里。</p></li><li><p>第二次握手:<br>服务器发回确认包(ACK)应答。即SYN标志位和ACK标志位均为1同时，将确认序号(Acknowledgement Number)设置为客户的I S N加1以.即X+1。</p></li><li><p>第三次握手.<br>客户端再次发送确认包(ACK) SYN标志位为0,ACK标志位为1.并且把服务器发来ACK的序号字段+1,放在确定字段中发送给对方.并且在数据段放写ISN的+1</p></li></ul><h3 id="SYN攻击"><a href="#SYN攻击" class="headerlink" title="SYN攻击"></a>SYN攻击</h3><p>在三次握手过程中，服务器发送<strong>SYN-ACK</strong>之后，收到客户端的<strong>ACK</strong>之前的TCP连接称为<strong>半连接(half-open connect)</strong>.此时服务器处于<strong>Syn_RECV</strong>状态.当收到ACK后，服务器转入<strong>ESTABLISHED</strong>状态.</p><p> Syn攻击就是 攻击客户端 在短时间内伪造<strong>大量不存在的IP地址</strong>，向服务器<strong>不断地发送syn包</strong>，服务器回复确认包，并等待客户的确认，由于源地址是<strong>不存在</strong>的，服务器需要不断的重发直至<strong>超时</strong>，这些伪造的SYN包将长时间占用未连接队列，正常的SYN请求被丢弃，目标系统运行缓慢，严重者引起网络堵塞甚至系统瘫痪。</p><p> Syn攻击是一个典型的<strong>DDOS</strong>攻击。检测SYN攻击非常的方便，当你在服务器上看到大量的半连接状态时，特别是源IP地址是<strong>随机</strong>的，基本上可以断定这是一次<strong>SYN攻击</strong>.在Linux下可以如下命令检测是否被Syn攻击</p><pre><code>netstat -n -p TCP | grep SYN_RECV</code></pre><p>一般较新的<strong>TCP/IP协议栈</strong>都对这一过程进行修正来防范Syn攻击，修改tcp协议实现。主要方法有<strong>SynAttackProtect</strong>保护机制、SYN cookies技术、增加最大半连接和缩短超时时间等.</p><p>但是不能完全防范syn攻击。</p><h2 id="TCP-四次挥手"><a href="#TCP-四次挥手" class="headerlink" title="TCP 四次挥手"></a>TCP 四次挥手</h2><p>TCP的连接的拆除需要发送四个包，因此称为**四次挥手(four-way handshake)**。客户端或服务器均可主动发起挥手动作，在socket编程中，任何一方执行close()操作即可产生挥手操作。</p><img src="/2020/03/10/wei-shi-me-tcp-lian-jie-san-ci-wo-shou-er-tcp-duan-kai-lian-jie-si-ci-fen-shou/2.png" class=""><p>TCP是主机对主机层的传输控制协议，提供可靠的连接服务，采用三次握手确认建立一个连接:</p><p>位码即tcp标志位,有6种标示:</p><ul><li>SYN(synchronous建立联机) </li><li>ACK(acknowledgement 确认) </li><li>PSH(push传送) FIN(finish结束) </li><li>RST(reset重置) URG(urgent紧急)</li><li>Sequence number(顺序号码)</li><li>Acknowledge number(确认号码)</li></ul><p>第一次握手：主机A发送位码为syn＝1,随机产生seq number=1234567的数据包到服务器，主机B由SYN=1知道，A要求建立联机；</p><p>第二次握手：主机B收到请求后要确认联机信息，向A发送ack number=(主机A的seq+1),syn=1,ack=1,随机产生seq=7654321的包</p><p>第三次握手：主机A收到后检查ack number是否正确，即第一次发送的seq number+1,以及位码ack是否为1，若正确，主机A会再发送ack number=(主机B的seq+1),ack=1，主机B收到后确认seq值与ack=1则连接建立成功。</p><p>完成三次握手，主机A与主机B开始传送数据。</p><p>在TCP/IP协议中，TCP协议提供可靠的连接服务，采用三次握手建立一个连接。<br>第一次握手：建立连接时，客户端发送<strong>syn</strong>包(syn=j)到服务器，并进入<strong>SYN_SEND</strong>状态，等待服务器确认；<br>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=j+1），同时自己也发送一个SYN包（syn=k），即<strong>SYN+ACK</strong>包，此时服务器 进入<strong>SYN_RECV</strong>状态；<br>第三次握手：客户端收到服务器的<strong>SYN＋ACK</strong>包，向服务器发送确认包ACK(ack=k+1)，此包发送完毕，客户端和服务器进入 <strong>ESTABLISHED</strong>状态，完成三次握手。 完成三次握手，客户端与服务器开始传送数据.</p><h3 id="四次分手："><a href="#四次分手：" class="headerlink" title="四次分手："></a>四次分手：</h3><p>由于TCP连接是<strong>全双工</strong>的，因此每个方向都必须单独进行关闭。这个原则是当一方完成它的数据发送任务后就能发送一个<strong>FIN</strong>来终止这个方向的连接。收 到一个<strong>FIN</strong>只意味着这一方向上没有数据流动，一个TCP连接在收到一个<strong>FIN</strong>后仍能发送数据。首先进行关闭的一方将执行主动关闭，而另一方执行被动关闭。</p><ul><li><p>客户端A发送一个FIN，用来关闭客户A到服务器B的数据传送（报文段4）。</p></li><li><p>服务器B收到这个FIN，它发回一个ACK，确认序号为收到的序号加1（报文段5）。和SYN一样，一个FIN将占用一个序号。</p></li><li><p>服务器B关闭与客户端A的连接，发送一个FIN给客户端A（报文段6）。</p></li><li><p>客户端A发回ACK报文确认，并将确认序号设置为收到序号加1（报文段7）。</p></li></ul><h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><h3 id="1．为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？"><a href="#1．为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？" class="headerlink" title="1．为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？"></a>1．为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？</h3><p>这是因为服务端的<strong>LISTEN</strong>状态下的SOCKET当收到SYN报文的建连请求后，它可以把ACK和SYN（ACK起应答作用，而SYN起同步作 用）放在一个报文里来发送。但关闭连接时，当收到对方的<strong>FIN</strong>报文通知时，它仅仅表示对方没有数据发送给你了；但未必你所有的数据都全部发送给对方了，所以你可以未必会马上会关闭SOCKET,也即你可能还需要发送一些数据给对方之后，再发送<strong>FIN</strong>报文给对方来表示你同意现在可以关闭连接了所以它这里的ACK报文和FIN报文多数情况下都是<strong>分开发送</strong>的。</p><h3 id="2．为什么TIME-WAIT状态还需要等2MSL后才能返回到CLOSED状态？"><a href="#2．为什么TIME-WAIT状态还需要等2MSL后才能返回到CLOSED状态？" class="headerlink" title="2．为什么TIME_WAIT状态还需要等2MSL后才能返回到CLOSED状态？"></a>2．为什么TIME_WAIT状态还需要等2MSL后才能返回到CLOSED状态？</h3><p>这是因为虽然双方都同意关闭连接了,而且握手的4个报文也都协调和发送完毕，按理可以直接回到<strong>CLOSED</strong>状态（就好比 从SYN_SEND状态到ESTABLISH状态那样）；但是因为我们必须要假想网络是不可靠的，你无法保证你最后发送的ACK报文会一定被对方收到，因 此对方处于<strong>LAST_ACK</strong>状态下的SOCKET可能会因为超时未收到ACK报文，而重发FIN报文，所以这个<strong>TIME_WAIT</strong>状态的作用就是用来重发 可能丢失的ACK报文。</p><div id="gitalk-container"></div><script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script><script>var gitalkConfig = {"clientID":"531fdf9b5545166cc613","clientSecret":"ab49d6454dc28018f5f2c2651e5a626bc7064c66","repo":"gitalk","owner":"huangf20","admin":["huangf20"],"distractionFreeMode":false};    gitalkConfig.id = md5(location.pathname);var gitalk = new Gitalk(gitalkConfig);    gitalk.render("gitalk-container");    </script>]]></content>
+      
+      
+      <categories>
+          
+          <category> 计算机网络 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机网络 </tag>
+            
+            <tag> TCP </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Object的公用方法</title>
+      <link href="2020/02/20/object-de-gong-yong-fang-fa/"/>
+      <url>2020/02/20/object-de-gong-yong-fang-fa/</url>
+      
+        <content type="html"><![CDATA[<h2 id="clone"><a href="#clone" class="headerlink" title="clone"></a>clone</h2><p>保护方法，实现对象的浅复制，只有实现了<strong>Cloneable</strong>接口才可以调用该方法，否则抛出CloneNotSupportedException异常  </p><h2 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h2><p>在Object中与==是一样的，子类一般需要重写该方法</p><h2 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode"></a>hashCode</h2><p>该方法用于哈希查找，重写了equals方法一般都要重写hashCode方法。这个方法在一些具有哈希功能的Collection中用到</p><h2 id="getClass"><a href="#getClass" class="headerlink" title="getClass"></a>getClass</h2><p>final方法，获得运行时类型</p><h2 id="wait"><a href="#wait" class="headerlink" title="wait"></a>wait</h2><p>使当前线程等待该对象的锁，当前线程必须是该对象的拥有者，也就是具有该对象的锁。wait()方法一直等待，直到获得锁或者被中断。wait(long timeout)设定一个超时间隔，如果在规定时间内没有获得锁就返回。 <br>调用该方法后当前线程进入睡眠状态，直到以下事件发生： </p><ol><li>其他线程调用了该对象的notify方法 </li><li>其他线程调用了该对象的notifyAll方法 </li><li>其他线程调用了interrupt中断该线程 </li><li>时间间隔到了 <br>此时该线程就可以被调度了，如果是被中断的话就抛出一个<strong>InterruptedException</strong>异常</li></ol><h2 id="notify"><a href="#notify" class="headerlink" title="notify"></a>notify</h2><p>唤醒在该对象上等待的某个线程</p><h2 id="notifyAll"><a href="#notifyAll" class="headerlink" title="notifyAll"></a>notifyAll</h2><p>唤醒在该对象上等待的所有线程</p><h2 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h2><p>转换成字符串，一般子类都有重写，否则打印句柄</p><div id="gitalk-container"></div><script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script><script>var gitalkConfig = {"clientID":"531fdf9b5545166cc613","clientSecret":"ab49d6454dc28018f5f2c2651e5a626bc7064c66","repo":"gitalk","owner":"huangf20","admin":["huangf20"],"distractionFreeMode":false};    gitalkConfig.id = md5(location.pathname);var gitalk = new Gitalk(gitalkConfig);    gitalk.render("gitalk-container");    </script>]]></content>
+      
+      
+      <categories>
+          
+          <category> java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
             
         </tags>
       
