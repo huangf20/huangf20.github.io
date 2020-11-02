@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Object的公用方法, Blog of Hanoi">
+    <meta name="keywords" content="gradle初探，构建脚本, Blog of Hanoi">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Object的公用方法 | Blog of Hanoi</title>
+    <title>gradle初探，构建脚本 | Blog of Hanoi</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -415,12 +415,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/31.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/42.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Object的公用方法</h1>
+                    <h1 class="description center-align post-title">gradle初探，构建脚本</h1>
                 </div>
             </div>
         </div>
@@ -537,8 +537,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/java/">
-                                <span class="chip bg-color">java</span>
+                            <a href="/tags/gradle/">
+                                <span class="chip bg-color">gradle</span>
+                            </a>
+                        
+                            <a href="/tags/groovy/">
+                                <span class="chip bg-color">groovy</span>
                             </a>
                         
                     </div>
@@ -549,8 +553,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/java/" class="post-category">
-                                java
+                            <a href="/categories/Android/" class="post-category">
+                                Android
                             </a>
                         
                     </div>
@@ -562,7 +566,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-02-20
+                    2020-10-22
                 </div>
                 
 
@@ -571,14 +575,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    366
+                    632
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -593,20 +597,93 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="clone"><a href="#clone" class="headerlink" title="clone"></a>clone</h2><p>保护方法，实现对象的浅复制，只有实现了<strong>Cloneable</strong>接口才可以调用该方法，否则抛出CloneNotSupportedException异常  </p>
-<h2 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h2><p>在Object中与==是一样的，子类一般需要重写该方法</p>
-<h2 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode"></a>hashCode</h2><p>该方法用于哈希查找，重写了equals方法一般都要重写hashCode方法。这个方法在一些具有哈希功能的Collection中用到</p>
-<h2 id="getClass"><a href="#getClass" class="headerlink" title="getClass"></a>getClass</h2><p>final方法，获得运行时类型</p>
-<h2 id="wait"><a href="#wait" class="headerlink" title="wait"></a>wait</h2><p>使当前线程等待该对象的锁，当前线程必须是该对象的拥有者，也就是具有该对象的锁。wait()方法一直等待，直到获得锁或者被中断。wait(long timeout)设定一个超时间隔，如果在规定时间内没有获得锁就返回。 <br>调用该方法后当前线程进入睡眠状态，直到以下事件发生： </p>
-<ol>
-<li>其他线程调用了该对象的notify方法 </li>
-<li>其他线程调用了该对象的notifyAll方法 </li>
-<li>其他线程调用了interrupt中断该线程 </li>
-<li>时间间隔到了 <br>此时该线程就可以被调度了，如果是被中断的话就抛出一个<strong>InterruptedException</strong>异常</li>
-</ol>
-<h2 id="notify"><a href="#notify" class="headerlink" title="notify"></a>notify</h2><p>唤醒在该对象上等待的某个线程</p>
-<h2 id="notifyAll"><a href="#notifyAll" class="headerlink" title="notifyAll"></a>notifyAll</h2><p>唤醒在该对象上等待的所有线程</p>
-<h2 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h2><p>转换成字符串，一般子类都有重写，否则打印句柄</p>
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  现在的Android应用都是采用Android Studio来开发的，AS默认是采用Gradle作为构建工具的。通常开发者可以不需要理解任何Gradle的脚本配置，就可以开发出一个APP。但是，当你想做一些更智能的操作时，比如修改打包后的输出目录、提高打包速度等等，就必须对Gradle有比较深入的了解。Gradle脚本是基于Groovy语言来编译执行的，在这之前最好要对Groovy语言有所了解。</p>
+<h2 id="build-gradle脚本"><a href="#build-gradle脚本" class="headerlink" title="build.gradle脚本"></a>build.gradle脚本</h2><p>Gradle构建脚本默认的名字是build.gradle，当在shell中执行gradle命令时，Gradle会去当前目录下寻找名字是build.gradle的文件。在Gradle中一个原子性的操作叫做task，简单理解为task是Gradle脚本中的最小可执行单元。  </p>
+<h3 id="最简单的一个task任务"><a href="#最简单的一个task任务" class="headerlink" title="最简单的一个task任务"></a>最简单的一个task任务</h3><pre><code>class PluginDemo implements Plugin&lt;Project&gt;{
+
+    @Override
+    void apply(Project project) {
+        project.logger.error(&quot;-------------------------开始运行----------------------------&quot;)
+        project.task(&quot;test_task&quot;) {
+            println(&quot;hello world,this is a task&quot;)
+        }
+    }
+
+}
+
+apply plugin: GreetingPlugin</code></pre>
+<p>然后在命令行输入：</p>
+<pre><code>&gt;gradlew -q test_task
+&#39;-------------------------开始运行----------------------------&#39;
+hello world,this is a task</code></pre>
+
+<h3 id="使插件可配置化"><a href="#使插件可配置化" class="headerlink" title="使插件可配置化"></a>使插件可配置化</h3><pre><code>class GreetingPluginExtension {
+    String message &#x3D; &#39;Hello from GreetingPlugin&#39;
+}
+
+class GreetingPlugin implements Plugin&lt;Project&gt; {
+    void apply(Project project) {
+        &#x2F;&#x2F; Add the &#39;greeting&#39; extension object
+        def extension &#x3D; project.extensions.create(&#39;greeting&#39;, GreetingPluginExtension)
+        &#x2F;&#x2F; Add a task that uses configuration from the extension object
+        project.task(&#39;hello&#39;) {
+            doLast {
+                println extension.message
+            }
+        }
+    }
+}
+
+apply plugin: GreetingPlugin
+
+&#x2F;&#x2F; Configure the extension
+greeting.message &#x3D; &#39;Hi from Gradle&#39;</code></pre>
+
+<p>然后在命令行输入：</p>
+<pre><code>&gt;gradlew -q hello
+Hi from Gradle</code></pre>
+
+<h3 id="在自定义任务和插件中处理文件"><a href="#在自定义任务和插件中处理文件" class="headerlink" title="在自定义任务和插件中处理文件"></a>在自定义任务和插件中处理文件</h3><pre><code>class GreetingToFileTask extends DefaultTask {
+
+    def destination
+
+    @OutputFile
+    File getDestination() {
+        project.file(destination)
+    }
+
+    @TaskAction
+    def greet() {
+        def file &#x3D; getDestination()
+        file.parentFile.mkdirs()
+        file.write &#39;Hello!&#39;
+    }
+}
+
+task greet(type: GreetingToFileTask) {
+    destination &#x3D; { project.greetingFile }
+}
+
+task sayGreeting(dependsOn: greet) {
+    doLast {
+        println file(greetingFile).text
+    }
+}
+
+ext.greetingFile &#x3D; &quot;$buildDir&#x2F;hello.txt&quot;</code></pre>
+
+<p>然后在命令行输入：</p>
+<pre><code>&gt;gradle -q sayGreeting
+Hello</code></pre>
+
+<h2 id="Gradle-构建生命周期"><a href="#Gradle-构建生命周期" class="headerlink" title="Gradle 构建生命周期"></a>Gradle 构建生命周期</h2><p>无论什么时候执行Gradle构建，都会运行3个不同的生命周期阶段：初始化、配置、执行。</p>
+<ul>
+<li>初始化（Initialization）<br>Gradle为每个项目创建一个Project实例，在多项目构建中，Gradle会找出哪些项目依赖需要参与到构建中。</li>
+<li>配置（Configuration）<br>执行所有项目的构建脚本，也就是执行每个项目的build.gradle文件。这里需要注意的是，task里的配置代码也会在这个阶段执行。  </li>
+<li>执行（Execution）<br>Gradle按照依赖顺序依次执行task。  <img src="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/1.png" class="">
+<img src="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/2.png" class="">
+</li>
+</ul>
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
@@ -641,7 +718,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://huangf20.github.io/2020/02/20/object-de-gong-yong-fang-fa/">https://huangf20.github.io/2020/02/20/object-de-gong-yong-fang-fa/</a>
+                    <a href="https://huangf20.github.io/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/">https://huangf20.github.io/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -679,8 +756,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/java/">
-                                    <span class="chip bg-color">java</span>
+                                <a href="/tags/gradle/">
+                                    <span class="chip bg-color">gradle</span>
+                                </a>
+                            
+                                <a href="/tags/groovy/">
+                                    <span class="chip bg-color">groovy</span>
                                 </a>
                             
                         </div>
@@ -848,17 +929,18 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2020/03/10/wei-shi-me-tcp-lian-jie-san-ci-wo-shou-er-tcp-duan-kai-lian-jie-si-ci-fen-shou/">
+                <a href="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/39.jpg" class="responsive-img" alt="为什么TCP连接三次握手而TCP断开连接四次分手？">
+                        <img src="/medias/featureimages/42.jpg" class="responsive-img" alt="gradle初探，构建脚本">
                         
-                        <span class="card-title">为什么TCP连接三次握手而TCP断开连接四次分手？</span>
+                        <span class="card-title">gradle初探，构建脚本</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -868,30 +950,31 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-22
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="post-category">
-                                    计算机网络
+                            <a href="/categories/Android/" class="post-category">
+                                    Android
                                 </a>
                             
                             
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
-                        <span class="chip bg-color">计算机网络</span>
+                    <a href="/tags/gradle/">
+                        <span class="chip bg-color">gradle</span>
                     </a>
                     
-                    <a href="/tags/TCP/">
-                        <span class="chip bg-color">TCP</span>
+                    <a href="/tags/groovy/">
+                        <span class="chip bg-color">groovy</span>
                     </a>
                     
                 </div>
@@ -905,32 +988,48 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/01/05/hello-world/">
+                <a href="/2020/09/10/er-cha-sou-suo-shu-you-duo-shao-chong/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="二叉搜索树有多少种">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">二叉搜索树有多少种</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            给定一个整数 n，求以 1 ... n 为节点组成的二叉搜索树有多少种？
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-05
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-10
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            hanoi
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%AE%97%E6%B3%95/" class="post-category">
+                                    算法
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
+                        <span class="chip bg-color">动态规划</span>
+                    </a>
+                    
                 </div>
                 
             </div>

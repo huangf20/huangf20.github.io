@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>gradle初探，构建脚本</title>
+      <link href="2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/"/>
+      <url>2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/</url>
+      
+        <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  现在的Android应用都是采用Android Studio来开发的，AS默认是采用Gradle作为构建工具的。通常开发者可以不需要理解任何Gradle的脚本配置，就可以开发出一个APP。但是，当你想做一些更智能的操作时，比如修改打包后的输出目录、提高打包速度等等，就必须对Gradle有比较深入的了解。Gradle脚本是基于Groovy语言来编译执行的，在这之前最好要对Groovy语言有所了解。</p><h2 id="build-gradle脚本"><a href="#build-gradle脚本" class="headerlink" title="build.gradle脚本"></a>build.gradle脚本</h2><p>Gradle构建脚本默认的名字是build.gradle，当在shell中执行gradle命令时，Gradle会去当前目录下寻找名字是build.gradle的文件。在Gradle中一个原子性的操作叫做task，简单理解为task是Gradle脚本中的最小可执行单元。  </p><h3 id="最简单的一个task任务"><a href="#最简单的一个task任务" class="headerlink" title="最简单的一个task任务"></a>最简单的一个task任务</h3><pre><code>class PluginDemo implements Plugin&lt;Project&gt;{    @Override    void apply(Project project) {        project.logger.error(&quot;-------------------------开始运行----------------------------&quot;)        project.task(&quot;test_task&quot;) {            println(&quot;hello world,this is a task&quot;)        }    }}apply plugin: GreetingPlugin</code></pre><p>然后在命令行输入：</p><pre><code>&gt;gradlew -q test_task&#39;-------------------------开始运行----------------------------&#39;hello world,this is a task</code></pre><h3 id="使插件可配置化"><a href="#使插件可配置化" class="headerlink" title="使插件可配置化"></a>使插件可配置化</h3><pre><code>class GreetingPluginExtension {    String message &#x3D; &#39;Hello from GreetingPlugin&#39;}class GreetingPlugin implements Plugin&lt;Project&gt; {    void apply(Project project) {        &#x2F;&#x2F; Add the &#39;greeting&#39; extension object        def extension &#x3D; project.extensions.create(&#39;greeting&#39;, GreetingPluginExtension)        &#x2F;&#x2F; Add a task that uses configuration from the extension object        project.task(&#39;hello&#39;) {            doLast {                println extension.message            }        }    }}apply plugin: GreetingPlugin&#x2F;&#x2F; Configure the extensiongreeting.message &#x3D; &#39;Hi from Gradle&#39;</code></pre><p>然后在命令行输入：</p><pre><code>&gt;gradlew -q helloHi from Gradle</code></pre><h3 id="在自定义任务和插件中处理文件"><a href="#在自定义任务和插件中处理文件" class="headerlink" title="在自定义任务和插件中处理文件"></a>在自定义任务和插件中处理文件</h3><pre><code>class GreetingToFileTask extends DefaultTask {    def destination    @OutputFile    File getDestination() {        project.file(destination)    }    @TaskAction    def greet() {        def file &#x3D; getDestination()        file.parentFile.mkdirs()        file.write &#39;Hello!&#39;    }}task greet(type: GreetingToFileTask) {    destination &#x3D; { project.greetingFile }}task sayGreeting(dependsOn: greet) {    doLast {        println file(greetingFile).text    }}ext.greetingFile &#x3D; &quot;$buildDir&#x2F;hello.txt&quot;</code></pre><p>然后在命令行输入：</p><pre><code>&gt;gradle -q sayGreetingHello</code></pre><h2 id="Gradle-构建生命周期"><a href="#Gradle-构建生命周期" class="headerlink" title="Gradle 构建生命周期"></a>Gradle 构建生命周期</h2><p>无论什么时候执行Gradle构建，都会运行3个不同的生命周期阶段：初始化、配置、执行。</p><ul><li>初始化（Initialization）<br>Gradle为每个项目创建一个Project实例，在多项目构建中，Gradle会找出哪些项目依赖需要参与到构建中。</li><li>配置（Configuration）<br>执行所有项目的构建脚本，也就是执行每个项目的build.gradle文件。这里需要注意的是，task里的配置代码也会在这个阶段执行。  </li><li>执行（Execution）<br>Gradle按照依赖顺序依次执行task。  <img src="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/1.png" class=""><img src="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/2.png" class=""></li></ul><div id="gitalk-container"></div><script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script><script>var gitalkConfig = {"clientID":"531fdf9b5545166cc613","clientSecret":"ab49d6454dc28018f5f2c2651e5a626bc7064c66","repo":"gitalk","owner":"huangf20","admin":["huangf20"],"distractionFreeMode":false};    gitalkConfig.id = md5(location.pathname);var gitalk = new Gitalk(gitalkConfig);    gitalk.render("gitalk-container");    </script>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> gradle </tag>
+            
+            <tag> groovy </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>二叉搜索树有多少种</title>
       <link href="2020/09/10/er-cha-sou-suo-shu-you-duo-shao-chong/"/>
       <url>2020/09/10/er-cha-sou-suo-shu-you-duo-shao-chong/</url>
@@ -72,9 +99,9 @@
       
         <tags>
             
-            <tag> http </tag>
-            
             <tag> 计算机网络 </tag>
+            
+            <tag> http </tag>
             
         </tags>
       
