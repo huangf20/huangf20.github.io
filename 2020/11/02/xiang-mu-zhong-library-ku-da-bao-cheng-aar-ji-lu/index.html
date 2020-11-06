@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="gradle初探，构建脚本, Blog of Hanoi">
+    <meta name="keywords" content="项目中library库打包成aar记录, Blog of Hanoi">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>gradle初探，构建脚本 | Blog of Hanoi</title>
+    <title>项目中library库打包成aar记录 | Blog of Hanoi</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -415,12 +415,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/42.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">gradle初探，构建脚本</h1>
+                    <h1 class="description center-align post-title">项目中library库打包成aar记录</h1>
                 </div>
             </div>
         </div>
@@ -566,7 +566,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-10-22
+                    2020-11-02
                 </div>
                 
 
@@ -575,14 +575,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    632
+                    977
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    3 分
                 </div>
                 
 
@@ -597,93 +597,30 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>  现在的Android应用都是采用Android Studio来开发的，AS默认是采用Gradle作为构建工具的。通常开发者可以不需要理解任何Gradle的脚本配置，就可以开发出一个APP。但是，当你想做一些更智能的操作时，比如修改打包后的输出目录、提高打包速度等等，就必须对Gradle有比较深入的了解。Gradle脚本是基于Groovy语言来编译执行的，在这之前最好要对Groovy语言有所了解。</p>
-<h2 id="build-gradle脚本"><a href="#build-gradle脚本" class="headerlink" title="build.gradle脚本"></a>build.gradle脚本</h2><p>Gradle构建脚本默认的名字是build.gradle，当在shell中执行gradle命令时，Gradle会去当前目录下寻找名字是build.gradle的文件。在Gradle中一个原子性的操作叫做task，简单理解为task是Gradle脚本中的最小可执行单元。  </p>
-<h3 id="最简单的一个task任务"><a href="#最简单的一个task任务" class="headerlink" title="最简单的一个task任务"></a>最简单的一个task任务</h3><pre><code>class PluginDemo implements Plugin&lt;Project&gt;{
-
-    @Override
-    void apply(Project project) {
-        project.logger.error(&quot;-------------------------开始运行----------------------------&quot;)
-        project.task(&quot;test_task&quot;) {
-            println(&quot;hello world,this is a task&quot;)
-        }
-    }
-
-}
-
-apply plugin: GreetingPlugin</code></pre>
-<p>然后在命令行输入：</p>
-<pre><code>&gt;gradlew -q test_task
-&#39;-------------------------开始运行----------------------------&#39;
-hello world,this is a task</code></pre>
-
-<h3 id="使插件可配置化"><a href="#使插件可配置化" class="headerlink" title="使插件可配置化"></a>使插件可配置化</h3><pre><code>class GreetingPluginExtension {
-    String message &#x3D; &#39;Hello from GreetingPlugin&#39;
-}
-
-class GreetingPlugin implements Plugin&lt;Project&gt; {
-    void apply(Project project) {
-        &#x2F;&#x2F; Add the &#39;greeting&#39; extension object
-        def extension &#x3D; project.extensions.create(&#39;greeting&#39;, GreetingPluginExtension)
-        &#x2F;&#x2F; Add a task that uses configuration from the extension object
-        project.task(&#39;hello&#39;) {
-            doLast {
-                println extension.message
-            }
-        }
-    }
-}
-
-apply plugin: GreetingPlugin
-
-&#x2F;&#x2F; Configure the extension
-greeting.message &#x3D; &#39;Hi from Gradle&#39;</code></pre>
-
-<p>然后在命令行输入：</p>
-<pre><code>&gt;gradlew -q hello
-Hi from Gradle</code></pre>
-
-<h3 id="在自定义任务和插件中处理文件"><a href="#在自定义任务和插件中处理文件" class="headerlink" title="在自定义任务和插件中处理文件"></a>在自定义任务和插件中处理文件</h3><pre><code>class GreetingToFileTask extends DefaultTask {
-
-    def destination
-
-    @OutputFile
-    File getDestination() {
-        project.file(destination)
-    }
-
-    @TaskAction
-    def greet() {
-        def file &#x3D; getDestination()
-        file.parentFile.mkdirs()
-        file.write &#39;Hello!&#39;
-    }
-}
-
-task greet(type: GreetingToFileTask) {
-    destination &#x3D; { project.greetingFile }
-}
-
-task sayGreeting(dependsOn: greet) {
-    doLast {
-        println file(greetingFile).text
-    }
-}
-
-ext.greetingFile &#x3D; &quot;$buildDir&#x2F;hello.txt&quot;</code></pre>
-
-<p>然后在命令行输入：</p>
-<pre><code>&gt;gradle -q sayGreeting
-Hello</code></pre>
-
-<h2 id="Gradle-构建生命周期"><a href="#Gradle-构建生命周期" class="headerlink" title="Gradle 构建生命周期"></a>Gradle 构建生命周期</h2><p>无论什么时候执行Gradle构建，都会运行3个不同的生命周期阶段：初始化、配置、执行。</p>
+                <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>  项目中的library库需要打包出来供其他地方使用，而普通的gradle assemble命令只能把项目本身打包，不会把依赖的jar/aar一起打包，这时候似乎只能通过gradle脚本来实现想要的效果，本身对Android编译过程和groovy不熟悉，所以参考了GitHub上两个方案。  </p>
 <ul>
-<li>初始化（Initialization）<br>Gradle为每个项目创建一个Project实例，在多项目构建中，Gradle会找出哪些项目依赖需要参与到构建中。</li>
-<li>配置（Configuration）<br>执行所有项目的构建脚本，也就是执行每个项目的build.gradle文件。这里需要注意的是，task里的配置代码也会在这个阶段执行。  </li>
-<li>执行（Execution）<br>Gradle按照依赖顺序依次执行task。  <img src="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/1.png" class="">
-<img src="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/2.png" class="">
-</li>
+<li>方案1<a target="_blank" rel="noopener" href="https://github.com/Mobbeel/fataar-gradle-plugin">fataar-gradle-plugin</a></li>
+<li>方案2<a target="_blank" rel="noopener" href="https://github.com/kezong/fat-aar-android">fat-aar-android</a></li>
 </ul>
+<h2 id="经过"><a href="#经过" class="headerlink" title="经过"></a>经过</h2><h3 id="了解groovy语法，构建一些简单的脚本"><a href="#了解groovy语法，构建一些简单的脚本" class="headerlink" title="了解groovy语法，构建一些简单的脚本"></a>了解groovy语法，构建一些简单的脚本</h3><p><a target="_blank" rel="noopener" href="https://docs.gradle.org/current/userguide/custom_plugins.html#sec:packaging_a_plugin">官方自定义gradle脚本文档</a></p>
+<h3 id="着手对library库进行打包"><a href="#着手对library库进行打包" class="headerlink" title="着手对library库进行打包"></a>着手对library库进行打包</h3><h4 id="方案1，fataar-gradle-plugin"><a href="#方案1，fataar-gradle-plugin" class="headerlink" title="方案1，fataar-gradle-plugin"></a>方案1，<a target="_blank" rel="noopener" href="https://github.com/Mobbeel/fataar-gradle-plugin">fataar-gradle-plugin</a></h4><p>  新建一个名为buildSrc的module<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/1.png" class="" title="在项目中新建buildSrc module"><br>  将GitHub中buildSrc复制到本地项目中，然后在要打包的module的build.gradle中添加如下代码：<br>  <pre><code>apply plugin: com.mobbeel.plugin.custom
+ </code></pre><br>  com.mobbeel.plugin.custom可以自定义名称，只需在src/main/resources/META-INF/gradle-plugins/目录下配置<strong>properties</strong>文件，文件名就是使用时的名称<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/2.png" class="" title="例：配置为com.hf.plugin.custom"></p>
+<p>  在命令行中输入assemble命令<br>  <pre><code>gradlew :library:assemble Debug
+ </code></pre></p>
+<p>  然后发生错误：<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/3.png" class="" title="报错信息"><br>  <strong>解决方法</strong><br>  在DependencyProcessorPlugin.groovy中的R2ClassTask方法中加入选中代码：<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/4.png" class=""></p>
+<p>  即可打包成功，发生错误原因：gradle版本不一致时，build生成的路径会有所差别。</p>
+<p>  但是这个方案有个无法满足要求的点，就是此方案只能选择将全部内部的依赖打包进入aar，或者全部依赖都不打包进入aar，所以此方案不可行，寻找另一方案。</p>
+<h4 id="方案2fat-aar-android"><a href="#方案2fat-aar-android" class="headerlink" title="方案2fat-aar-android"></a>方案2<a target="_blank" rel="noopener" href="https://github.com/kezong/fat-aar-android">fat-aar-android</a></h4><p>  查看文档，这个插件可以通过embed将需要的依赖项加入最终的aar产物中，符合要求，开始配置<br>  将GitHub上源码下载至本地，把src目录拷贝至项目buildSrc中，然后在项目library的build.gradle中添加：<br>  <pre><code>apply plugin: &#39;com.kezong.fat-aar&#39;
+ </code></pre><br>  类似地，在命令行输入assemble命令<br>  <pre><code>gradlew :library:assemble Debug
+ </code></pre><br>  直接报错，某个方法参数类型有问题，debug开始，开启远程调试，命令行输入<br>  <pre><code>gradlew :library:assemble Debug -Dorg.gradle.daemon&#x3D;false -Dorg.gradle.debug&#x3D;true
+ </code></pre></p>
+<p>  debug了半天也没有找到问题在哪，最后看文档时找到了问题所在，<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/5.png" class="" title="Gradle Plugin和所需求的Gradle版本官方文档"><br>  项目用的gradle版本是4.4，而该插件在1.2.17之后就不再支持4.9以前的版本了。<br>  <strong>解决方法</strong><br>  把之前版本的源码下载到项目中，或者直接在项目build.gradle中的classpath添加该插件的依赖，就可以解决此问题。</p>
+<p>  随后又开始打包，又遇到个错误：<br>   <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/6.png" class="" title="错误信息"></p>
+<p>  随后根据报错信息debug<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/7.png" class="" title="debug信息"><br>  这才明白是gradle plugin的版本问题，项目的gradle plugin版本之前调试改成了3.0.0，而buildSrc的版本是3.1.3，造成冲突。<br>  <strong>解决方法</strong><br>  把项目gradle plugin版本改回至3.1.3  </p>
+<p>  问题总是接踵而至<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/9.png" class="" title="debug信息"><br>  这个问题在处理时也是毫无头绪，只能通过错误信息在对应方法处debug，也最后在源码中找到了解决方法：<br>  <strong>解决方法</strong><br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/10.png" class="" title="源码关于处理resource冲突的方法"><br>  大体意思就是为了鼓励开发人员不使用相同的res id ，这里会报一个Duplicate resources的错误，解决方法就是在项目的<strong>gradle.properties</strong> 中添加 <strong>android.disableResourceValidation=true</strong></p>
+<p>  最后成功打包成想要的aar包。<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/8.png" class="" title="打包成功"></p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><h3 id="达到预期效果"><a href="#达到预期效果" class="headerlink" title="达到预期效果"></a>达到预期效果</h3><p>  大体上达到了想要的效果，需要加入aar包的依赖、jar包，通过<strong>embed</strong>引入，不需要的就不会添加进来，但是官方文档建议不适用implementation添加依赖，容易发生版本冲突导致R类找不到，用compileOnly代替。</p>
+<h3 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h3><p>  目前的问题是在别的地方引用该aar包时，build时会报错某些依赖已经存在的问题，这个问题暂时还未解决，有些依赖是嵌套的，所以只能在使用时具体情况具体去处理。<br>  <img src="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/11.png" class="" title="存在的问题"></p>
 
 <div id="gitalk-container"></div>
 <script src="https://cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
@@ -718,7 +655,7 @@ Hello</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://huangf20.github.io/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/">https://huangf20.github.io/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/</a>
+                    <a href="https://huangf20.github.io/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/">https://huangf20.github.io/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -929,9 +866,10 @@ Hello</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/11/02/xiang-mu-zhong-library-ku-da-bao-cheng-aar-ji-lu/">
                     <div class="card-image">
@@ -949,9 +887,9 @@ Hello</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-11-02
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-11-02
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -964,6 +902,7 @@ Hello</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -986,31 +925,31 @@ Hello</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/09/10/er-cha-sou-suo-shu-you-duo-shao-chong/">
+                <a href="/2020/10/22/gradle-chu-tan-gou-jian-jiao-ben/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="二叉搜索树有多少种">
+                        <img src="/medias/featureimages/42.jpg" class="responsive-img" alt="gradle初探，构建脚本">
                         
-                        <span class="card-title">二叉搜索树有多少种</span>
+                        <span class="card-title">gradle初探，构建脚本</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            给定一个整数 n，求以 1 ... n 为节点组成的二叉搜索树有多少种？
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-10
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-10-22
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E7%AE%97%E6%B3%95/" class="post-category">
-                                    算法
+                            <a href="/categories/Android/" class="post-category">
+                                    Android
                                 </a>
                             
                             
@@ -1020,12 +959,12 @@ Hello</code></pre>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E7%AE%97%E6%B3%95/">
-                        <span class="chip bg-color">算法</span>
+                    <a href="/tags/gradle/">
+                        <span class="chip bg-color">gradle</span>
                     </a>
                     
-                    <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/">
-                        <span class="chip bg-color">动态规划</span>
+                    <a href="/tags/groovy/">
+                        <span class="chip bg-color">groovy</span>
                     </a>
                     
                 </div>
